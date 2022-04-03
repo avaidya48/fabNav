@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
 
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void openMaps(View view) {
+    public void openMaps(View view) throws InterruptedException {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         enableUserLocation();
         if(this.permissionGranted){
@@ -39,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("LatLng", new double[]{destLat,destLong});
             startActivity(intent);
             startGoogleNav(destLat, destLong);
+//            TimeUnit.SECONDS.sleep(10);
+//            double destLat2 = 33.77985451688092;
+//            double destLong2 = -84.3888850454161;
+//            NotificationHelper notificationHelper = new NotificationHelper(this);
+//            notificationHelper.sendHighPriorityNotification("Rerouting", "", MapsActivity.class);
+//            startGoogleNav(destLat2, destLong2);
         }else{
             Toast.makeText(this, "Need Permission...", Toast.LENGTH_SHORT).show();
         }
@@ -46,11 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void startGoogleNav(double destLat, double destLong) {
-        String uri = "google.navigation:q=" + destLat + "," + destLong + "&mode=l";
+    private void startGoogleNav(double destLat, double destLong) throws InterruptedException {
+        String uri = "google.navigation:q=" + destLat + "," + destLong + "&mode=d";
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         intent.setPackage("com.google.android.apps.maps");
         startActivity(intent);
+
     }
 
     private void enableUserLocation() {

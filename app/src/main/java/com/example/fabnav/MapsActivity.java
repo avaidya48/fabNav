@@ -6,9 +6,13 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +32,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.concurrent.TimeUnit;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private static final String TAG = "MapsActivity";
@@ -42,6 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
+
     }
 
 
@@ -77,10 +85,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        double destLong = -84.3995084;
         LatLng latLng = new LatLng(this.latlong[0], this.latlong[1]);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-
         enableUserLocation();
         addfence(latLng);
         mMap.setOnMapLongClickListener(this);
+
     }
 
     private void enableUserLocation() {
