@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+//        getSupportActionBar().hide();
     }
 
     public void openMaps(View view) throws InterruptedException {
@@ -50,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "Need Permission...", Toast.LENGTH_SHORT).show();
         }
+    }
 
-
+    public void openSettings(View view) throws InterruptedException {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void startGoogleNav(double destLat, double destLong) throws InterruptedException {

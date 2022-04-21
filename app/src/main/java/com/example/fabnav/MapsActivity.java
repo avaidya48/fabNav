@@ -64,6 +64,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
 
+        if (getIntent().hasExtra("fromNotification")) {
+            Log.d(TAG, "noti test click");
+        }
+
     }
 
 

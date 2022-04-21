@@ -50,6 +50,12 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                 double destLat = 33.77985451688092;
                 double destLong = -84.3888850454161;
                 notificationHelper.sendHighPriorityNotification("Entered Geofence. Rerouting..", "", MapsActivity.class);
+
+                //add right here stuff
+                // if they click the notification within 5 seconds, we do not want to redirect them
+                // if they do not click, then we do want to redirect them to the parking spot
+
+
                 startGoogleNav(context, destLat, destLong);
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
