@@ -20,59 +20,47 @@
             android:gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Settings"
+            android:text="Survey"
             android:textSize="50dp"
             />
 
-            <LinearLayout
-                android:switchMinWidth="56dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginTop="20dp"
-                android:textAlignment="center"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content"
-                android:layout_width="250dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="10dp"
-                    android:text="Max Rate Preference: "
-                    android:textColor="@color/black">
-                </TextView>
-
-                <EditText
-                    android:id="@+id/ratePref"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:text="0"
-                    android:layout_marginEnd="30dp"
-                    android:textAlignment="center" />
-            </LinearLayout>
-
-        <!--<Switch
-            android:id="@+id/switch1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
             android:switchMinWidth="56dp"
             android:layout_marginLeft="100dp"
             android:layout_marginTop="20dp"
-            android:text="Paid Parking:"
-            android:textSize="15dp"
-            android:checked="true"
-            android:textOff="OFF"
-            android:textOn="ON"/>-->
+            android:textAlignment="center"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="250dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"
+                android:text="Rate: "
+                android:textColor="@color/black">
+            </TextView>
+
+            <EditText
+                android:id="@+id/surveyRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="0"
+                android:layout_marginEnd="30dp"
+                android:textAlignment="center" />
+        </LinearLayout>
+
 
         <Switch
-            android:id="@+id/disabilityPref"
+            android:id="@+id/surveySafety"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:switchMinWidth="56dp"
             android:layout_marginLeft="100dp"
             android:layout_marginTop="20dp"
-            android:text="Disability Friendly:"
+            android:text="Safety:"
             android:textSize="15dp"
             android:checked="true"
             android:textOff="OFF"
@@ -89,19 +77,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="30dp"
-                android:text="Capacity Preferences: "
+                android:text="Capacity: "
                 android:textSize="15dp"
                 android:textStyle="bold">
             </TextView>
 
             <RadioGroup
-                android:id="@+id/occupancy"
+                android:id="@+id/surveyOccupancy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/EMPTY"
+                    android:id="@+id/surveyEMPTY"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Empty"
@@ -109,7 +97,7 @@
                     android:textSize="15sp" />
 
                 <RadioButton
-                    android:id="@+id/SOMEWHAT_FULL"
+                    android:id="@+id/surveySOMEWHAT_FULL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Somewhat Empty"
@@ -117,7 +105,7 @@
                     android:textSize="15sp" />
 
                 <RadioButton
-                    android:id="@+id/HALF_FULL"
+                    android:id="@+id/surveyHALF_FULL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Half Full"
@@ -125,7 +113,7 @@
                     android:textSize="15sp" />
 
                 <RadioButton
-                    android:id="@+id/ALMOST_FULL"
+                    android:id="@+id/surveyALMOST_FULL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Almost Full"
@@ -133,7 +121,7 @@
                     android:textSize="15sp" />
 
                 <RadioButton
-                    android:id="@+id/FULL"
+                    android:id="@+id/surveyFULL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Full"
@@ -152,8 +140,8 @@
             android:id="@+id/redeem_rewards_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Done"
-            android:onClick="saveUserDetails"
+            android:text="Submit"
+            android:onClick="submitSurvey"
             android:layout_marginTop="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.497"

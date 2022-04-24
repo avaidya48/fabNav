@@ -32,24 +32,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SurveyActivity extends AppCompatActivity {
 
     MyApp app;
+    String parkingId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings);
+        setContentView(R.layout.activity_survey);
         app  = (MyApp) getApplicationContext();
-
-        EditText ratePref = (EditText) findViewById(R.id.ratePref);
-        ratePref.setText(app.getUser().getPaymentMax().toString(), TextView.BufferType.EDITABLE);
-
-        Switch disabilityPref = (Switch) findViewById(R.id.disabilityPref);
-        disabilityPref.setChecked(app.getUser().getDisabilityFriendly());
-
-        int occupancyId = getResourceId(String.valueOf(app.getUser().getOccupancyPreference()), "id", getPackageName());
-        RadioButton occPref = (RadioButton) findViewById(occupancyId);
-        occPref.setChecked(true);
+        app.setSurvey(new Survey());
+        app.getSurvey().setParkingId(app.getParkingId());
 
     }
 
@@ -63,26 +56,28 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    public void saveUserDetails(View view) throws InterruptedException, JSONException {
-        Switch disabilityPref = (Switch) findViewById(R.id.disabilityPref);
-        app.getUser().setDisabilityFriendly(disabilityPref.isChecked());
+    public void submitSurvey(View view) throws InterruptedException, JSONException {
+        Switch safety = (Switch) findViewById(R.id.surveySafety);
+        app.getSurvey().setSafety(safety.isChecked());
 
-        EditText ratePref = (EditText) findViewById(R.id.ratePref);
-        app.getUser().setPaymentMax(Integer.valueOf(ratePref.getText().toString()));
+        EditText rate = (EditText) findViewById(R.id.surveyRate);
+        app.getSurvey().setRate(Long.valueOf(rate.getText().toString()));
 
-        RadioGroup occ = (RadioGroup) findViewById(R.id.occupancy);
-        String val = getResources().getResourceName(occ.getCheckedRadioButtonId()).split("/")[1];
-        app.getUser().setOccupancyPreference(User.occupancy.valueOf(val));
+        RadioGroup occ = (RadioGroup) findViewById(R.id.surveyOccupancy);
+        String val = getResources().getResourceName(occ.getCheckedRadioButtonId()).split("/")[1].split("survey")[1];
+        app.getSurvey().setOccupancy(User.occupancy.valueOf(val));
 
-        String jsonInString = new Gson().toJson(app.getUser());
+        app.getSurvey().setUserName(app.getUser().getUserName());
+
+        String jsonInString = new Gson().toJson(app.getSurvey());
         JSONObject mJSONObject = new JSONObject(jsonInString);
-        AndroidNetworking.put("https://fabnav-backend.herokuapp.com/updateUser/")
+        AndroidNetworking.put("https://fabnav-backend.herokuapp.com/survey/")
                 .addJSONObjectBody(mJSONObject)
                 .build()
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(SettingsActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SurveyActivity.this, "Thank You!", Toast.LENGTH_LONG).show();
                     }
 
                     private Context getActivity() {

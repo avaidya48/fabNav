@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:layout_marginTop="100dp"
-        android:text="950 pts"
+        android:id="@+id/pointsCollected"
         android:textSize="50dp"
         />
 

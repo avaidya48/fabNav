@@ -15,7 +15,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.widget.TextView;
+
+import org.json.JSONArray;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,10 +37,38 @@ public class MainActivity extends AppCompatActivity {
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
     private boolean permissionGranted;
+    MyApp app ;
+    private Object JsonObject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        app = (MyApp) getApplicationContext();
         super.onCreate(savedInstanceState);
+        //setContentView(R.layout.activity_main);
+        AndroidNetworking.initialize(getApplicationContext());
+
+        AndroidNetworking.get("https://fabnav-backend.herokuapp.com/getUserDetails/")
+                .addHeaders("name","test1")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Gson gson = new Gson();
+                        User user = gson.fromJson(response.toString(),User.class);
+                        app.setUser(user);
+                        TextView textViewToChange = (TextView) findViewById(R.id.pointsCollected);
+                        textViewToChange.setText(user.getCompletedSurveys()*10+" pts");
+                        //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                    }
+                });
+
         setContentView(R.layout.activity_main);
+
+        //AndroidNetworking.initialize(getApplicationContext());
 //        getSupportActionBar().hide();
     }
 
@@ -35,18 +76,16 @@ public class MainActivity extends AppCompatActivity {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         enableUserLocation();
         if(this.permissionGranted){
-            double destLat = 33.7774382;
-            double destLong = -84.3995084;
+            //33.775507, -84.401116
+            //Tech sq: 33.777073864682784, -84.39094838795614
+            Double destLat = 33.775507;
+            Double destLong = -84.401116;
+            //33.776862064689524, -84.3906077474249
+            app.setDestLat(destLat);
+            app.setDestLong(destLong);
             Intent intent = new Intent(this, MapsActivity.class);
             intent.putExtra("LatLng", new double[]{destLat,destLong});
             startActivity(intent);
-            startGoogleNav(destLat, destLong);
-//            TimeUnit.SECONDS.sleep(10);
-//            double destLat2 = 33.77985451688092;
-//            double destLong2 = -84.3888850454161;
-//            NotificationHelper notificationHelper = new NotificationHelper(this);
-//            notificationHelper.sendHighPriorityNotification("Rerouting", "", MapsActivity.class);
-//            startGoogleNav(destLat2, destLong2);
         }else{
             Toast.makeText(this, "Need Permission...", Toast.LENGTH_SHORT).show();
         }
@@ -57,13 +96,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void startGoogleNav(double destLat, double destLong) throws InterruptedException {
-        String uri = "google.navigation:q=" + destLat + "," + destLong + "&mode=d";
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        intent.setPackage("com.google.android.apps.maps");
-        startActivity(intent);
-
-    }
 
     private void enableUserLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

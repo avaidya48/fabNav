@@ -9,10 +9,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,16 +44,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
 
-    private float GEOFENCE_RADIUS = 200;
-    private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
+    private float GEOFENCE_RADIUS = 700;
+    private String GEOFENCE_ID = "DESTINATION";
     private double[] latlong;
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
+    private MyApp app;
 
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        app = (MyApp) getApplicationContext();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -67,6 +72,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (getIntent().hasExtra("fromNotification")) {
             Log.d(TAG, "noti test click");
         }
+
+        GEOFENCE_RADIUS = app.getUser().getRadius()*100;
 
     }
 
@@ -88,9 +95,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        double destLat = 33.7774382;
 //        double destLong = -84.3995084;
         LatLng latLng = new LatLng(this.latlong[0], this.latlong[1]);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
         enableUserLocation();
         addfence(latLng);
+        try {
+            startGoogleNav(app.getDestLat(), app.getDestLong());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         mMap.setOnMapLongClickListener(this);
 
     }
@@ -109,6 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == FINE_LOCATION_ACCESS_REQUEST_CODE) {
@@ -163,9 +176,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addGeofence(latLng, GEOFENCE_RADIUS);
     }
 
+    @SuppressLint("MissingPermission")
     private void addGeofence(LatLng latLng, float radius) {
 
-        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
+        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER);
         GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
         PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
 
@@ -198,5 +212,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         circleOptions.fillColor(Color.argb(64, 255, 0,0));
         circleOptions.strokeWidth(4);
         mMap.addCircle(circleOptions);
+    }
+
+    private void startGoogleNav(double destLat, double destLong) throws InterruptedException {
+        String uri = "google.navigation:q=" + destLat + "," + destLong + "&mode=d";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setPackage("com.google.android.apps.maps");
+        startActivity(intent);
     }
 }

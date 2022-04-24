@@ -9,8 +9,10 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -18,9 +20,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FabNav">
         <receiver
-            android:name=".GeofenceBroadcastReceiver"
+            android:name=".NotificationBroadcastReceiver"
             android:enabled="true"
             android:exported="true"></receiver>
+        <receiver
+            android:name=".GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -41,6 +47,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".SurveyActivity"
+            android:label="SurveyActivity">
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -49,9 +59,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity">
-
-        </activity>
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>
